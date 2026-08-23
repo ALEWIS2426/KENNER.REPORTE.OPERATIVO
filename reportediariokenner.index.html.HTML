@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KENNER - Reporte de Mantenimiento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen py-10 px-4">
+
+    <main class="max-w-3xl mx-auto space-y-6">
+        
+        <!-- Header con LOGO -->
+        <div class="bg-slate-950 border-l-4 border-teal-500 rounded-r-2xl p-6 shadow-xl flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">Reporte Operativo</h1>
+                <p class="text-teal-400 text-sm font-semibold mt-1">KENNER INGENIERIA SAC</p>
+            </div>
+            <!-- Logo KENNER actualizado -->
+            <img src="324706278_747465876919149_8193030929848223268_n.jpg" alt="Logo Kenner" class="h-14 md:h-16 w-auto object-contain rounded-lg shadow-md border border-slate-700">
+        </div>
+
+        <!-- Formulario -->
+        <div id="form-section" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg space-y-6">
+            
+            <!-- 1. Ubicación y Horario -->
+            <div class="space-y-4">
+                <h2 class="text-teal-400 font-bold text-sm uppercase flex items-center">
+                    <i class="fa-solid fa-map-location-dot mr-2"></i> 1. Ubicación y Horario
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Sede (Obligatorio)</label>
+                        <select id="sede" onchange="actualizarSede()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                            <option value="">-- Seleccionar Sede --</option>
+                            <option value="Arequipa">Arequipa</option>
+                            <option value="Lima">Lima</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Lugar</label>
+                        <select id="lugar" onchange="verificarLugar()" disabled class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none disabled:opacity-50">
+                            <option value="">Seleccione una sede primero</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Fecha del Reporte</label>
+                        <input type="date" id="fecha" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Turno</label>
+                        <select id="turno" onchange="verificarTurno()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                            <option value="Mañana (07:00 - 15:00)">Mañana (07:00 - 15:00)</option>
+                            <option value="Tarde (15:00 - 23:00)">Tarde (15:00 - 23:00)</option>
+                            <option value="Noche (23:00 - 07:00)">Noche (23:00 - 07:00)</option>
+                            <option value="Otro">Otro (Registro manual)</option>
+                        </select>
+                        <input type="text" id="turno-manual" placeholder="Especifique el turno" class="mt-2 hidden w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- Horarios Específicos (Backus AQP) -->
+                <div id="caja-horarios" class="hidden bg-slate-900 p-4 rounded-lg border border-slate-700 mt-2 grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-teal-400 mb-1">Registro de Ingreso</label>
+                        <input type="time" id="hora-inicio" class="w-full bg-slate-800 border border-slate-600 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-teal-400 mb-1">Registro de Término</label>
+                        <input type="time" id="hora-fin" class="w-full bg-slate-800 border border-slate-600 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-700">
+
+            <!-- 2. Datos Personales -->
+            <div class="space-y-4">
+                <h2 class="text-teal-400 font-bold text-sm uppercase flex items-center">
+                    <i class="fa-solid fa-user-circle mr-2"></i> 2. Datos del Personal
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre y Cargo</label>
+                        <select id="nombre-select" onchange="verificarNombre()" disabled class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none disabled:opacity-50">
+                            <option value="">Seleccione Sede primero</option>
+                        </select>
+                        <input type="text" id="nombre-manual" placeholder="Escriba el nombre completo" class="mt-2 hidden w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">DNI</label>
+                        <input type="number" id="dni" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-teal-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-700">
+
+            <!-- 3. Datos Mantenimiento - Múltiples Actividades -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-teal-400 font-bold text-sm uppercase flex items-center">
+                        <i class="fa-solid fa-wrench mr-2"></i> 3. Actividades Realizadas
+                    </h2>
+                    <button type="button" onclick="agregarActividad()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow">
+                        <i class="fa-solid fa-plus mr-1"></i> Agregar Actividad
+                    </button>
+                </div>
+
+                <!-- Contenedor Dinámico de Actividades -->
+                <div id="contenedor-actividades" class="space-y-4">
+                    <!-- Se inyecta la primera actividad por defecto -->
+                </div>
+            </div>
+
+            <hr class="border-slate-700">
+
+            <!-- 4. Orden y Limpieza -->
+            <div class="space-y-2 bg-slate-900 p-4 rounded-xl border border-slate-700">
+                <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="checkbox" id="orden-limpieza" class="w-5 h-5 accent-teal-500 rounded bg-slate-800 border-slate-600">
+                    <span class="text-sm font-semibold text-white">¿Realizó orden y limpieza del taller / área de trabajo?</span>
+                </label>
+            </div>
+
+            <hr class="border-slate-700">
+
+            <!-- 5. Evidencia Fotográfica -->
+            <div class="space-y-4">
+                <h2 class="text-teal-400 font-bold text-sm uppercase flex items-center">
+                    <i class="fa-solid fa-camera mr-2"></i> 5. Evidencia Fotográfica (Máx. 4)
+                </h2>
+                <div class="bg-slate-900 border border-dashed border-slate-600 rounded-xl p-4 text-center relative hover:border-teal-500 transition">
+                    <input type="file" id="input-fotos" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="cargarFotos(event)">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-500 mb-2"></i>
+                    <p class="text-sm text-slate-400">Toca para abrir cámara o galería</p>
+                </div>
+                <div id="preview-fotos" class="grid grid-cols-2 gap-2 mt-2"></div>
+            </div>
+
+            <button onclick="generarReporte()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3.5 rounded-lg transition shadow-lg transform active:scale-95 text-lg mt-4">
+                <i class="fa-solid fa-check-double mr-2"></i> Generar Reporte Final
+            </button>
+        </div>
+
+        <!-- Tarjeta de Resultado -->
+        <div id="resultado-reporte" class="hidden bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 md:p-8 shadow-2xl relative print:shadow-none print:border-0 print:p-0">
+            <div class="flex justify-between items-end border-b-2 border-teal-600 pb-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800">REPORTE TÉCNICO</h2>
+                    <p class="text-teal-700 font-bold text-sm">KENNER INGENIERIA SAC</p>
+                </div>
+                <!-- Logo KENNER actualizado para el reporte -->
+                <img src="324706278_747465876919149_8193030929848223268_n.jpg" alt="Logo Kenner" class="h-12 w-auto object-contain rounded-md border border-slate-200">
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm mb-6">
+                <div class="space-y-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h3 class="font-bold text-teal-700 border-b pb-1 mb-2">DATOS DEL PERSONAL</h3>
+                    <p><strong>Personal:</strong> <span id="res-nombre"></span></p>
+                    <p><strong>DNI:</strong> <span id="res-dni"></span></p>
+                </div>
+                <div class="space-y-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h3 class="font-bold text-teal-700 border-b pb-1 mb-2">UBICACIÓN Y TIEMPO</h3>
+                    <p><strong>Fecha:</strong> <span id="res-fecha"></span></p>
+                    <p><strong>Ubicación:</strong> <span id="res-ubicacion" class="font-bold"></span></p>
+                    <p><strong>Turno:</strong> <span id="res-turno"></span></p>
+                    <p id="res-horarios-box" class="hidden text-teal-700 font-semibold">
+                        <i class="fa-regular fa-clock"></i> Ingreso: <span id="res-hora-inicio"></span> | Término: <span id="res-hora-fin"></span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 mb-6">
+                <h3 class="font-bold text-teal-700 border-b pb-1 mb-3">DETALLES DE ACTIVIDADES</h3>
+                <div id="res-lista-actividades" class="space-y-4 text-sm"></div>
+                <div class="mt-4 pt-3 border-t border-slate-200">
+                    <p><strong>Orden y Limpieza del Taller:</strong> <span id="res-orden-limpieza" class="font-bold"></span></p>
+                </div>
+            </div>
+
+            <!-- Contenedor de fotos finales -->
+            <div id="res-fotos-container" class="hidden mb-6">
+                <h3 class="font-bold text-teal-700 border-b pb-1 mb-3 text-sm">EVIDENCIA FOTOGRÁFICA</h3>
+                <div id="res-fotos" class="grid grid-cols-2 gap-3"></div>
+            </div>
+
+            <p class="text-xs text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-200 mb-4 print:hidden">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> <b>Nota:</b> Para enviar el reporte por WhatsApp, recuerda que las fotos no se adjuntan automáticamente en el enlace, deberás enviarlas por separado en el chat.
+            </p>
+            
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 print:hidden">
+                <button onclick="compartirWhatsApp()" class="bg-green-600 hover:bg-green-500 text-white py-3 rounded-lg text-sm font-bold shadow transition">
+                    <i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp
+                </button>
+                <button onclick="copiarTexto()" class="bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-lg text-sm font-bold shadow transition">
+                    <i class="fa-solid fa-copy mr-1"></i> Copiar
+                </button>
+                <button onclick="window.print()" class="bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg text-sm font-bold shadow transition">
+                    <i class="fa-solid fa-file-pdf mr-1"></i> Imprimir/PDF
+                </button>
+                <button onclick="location.reload()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 py-3 rounded-lg text-sm font-bold shadow transition">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Nuevo
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <style>
+        @media print {
+            body { background-color: white !important; margin: 0; padding: 0;}
+            #resultado-reporte { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+        }
+    </style>
+
+    <script>
+        document.getElementById('fecha').valueAsDate = new Date();
+
+        // ------------------ DATOS Y LISTAS ------------------
+        const lugaresArequipa = ["BACKUS AQP", "ALICORP AQP", "SOLGAS", "KOPLAST", "TALLER AQP", "OTRO"];
+        const lugaresLima = ["INTRADEVCO", "BERICAP", "SMA SAC", "ALICORP", "FRENOSA", "KOPLAST", "CBC", "TALLER LIMA", "OTRO"];
+        
+        const personalArequipa = [
+            "JOHANDRI DANIEL TOYO M. (Operario)", "PIO RUBEN SAMATA Q. (Operario)", 
+            "JHANS DIEGO HUAMANI C. (Operario)", "VICTOR DANILO VELASQUEZ F. (Operario)",
+            "ALEJANDRA LEWIS U. (Sup. Seguridad)", "GABRIEL LEWIS U.R (Sup. Proyectos)",
+            "MIRANDA PONCE LEWIS (Asist. Diseño y Arquitectura)", "OTRO"
+        ];
+        
+        const personalLima = [
+            "JUAN AUCCA S. (Operario)", "KEVIN LEON M. (Operario)", "ANGEL COLONIO M. (Operario)",
+            "GHYANPIER LEYVA (Operario)", "VICTOR MARTINEZ (Operario)",
+            "JORGE A. LEWIS (Sup. Proyecto)", "JORGE B LEWIS (Sup. Proyectos)", "OTRO"
+        ];
+
+        let fotosBase64 = [];
+        let contadorActividades = 0;
+
+        // Inicializar con 1 actividad por defecto
+        window.onload = function() {
+            agregarActividad();
+        }
+
+        // ------------------ FUNCIONES LOGICAS ------------------
+        
+        function actualizarSede() {
+            const sede = document.getElementById('sede').value;
+            const selectLugar = document.getElementById('lugar');
+            const selectNombre = document.getElementById('nombre-select');
+            
+            selectLugar.innerHTML = '<option value="">-- Seleccionar Lugar --</option>';
+            selectNombre.innerHTML = '<option value="">-- Seleccionar Personal --</option>';
+            document.getElementById('nombre-manual').classList.add('hidden');
+            
+            if (sede === "") {
+                selectLugar.disabled = true;
+                selectNombre.disabled = true;
+                verificarLugar();
+                return;
+            }
+
+            selectLugar.disabled = false;
+            selectNombre.disabled = false;
+            
+            const listaLugares = sede === 'Arequipa' ? lugaresArequipa : lugaresLima;
+            const listaPersonal = sede === 'Arequipa' ? personalArequipa : personalLima;
+
+            listaLugares.forEach(lugar => selectLugar.appendChild(new Option(lugar, lugar)));
+            listaPersonal.forEach(persona => selectNombre.appendChild(new Option(persona, persona)));
+            
+            verificarLugar();
+        }
+
+        function verificarNombre() {
+            const nombreSelect = document.getElementById('nombre-select').value;
+            if(nombreSelect === 'OTRO') document.getElementById('nombre-manual').classList.remove('hidden');
+            else document.getElementById('nombre-manual').classList.add('hidden');
+        }
+
+        function verificarLugar() {
+            const lugar = document.getElementById('lugar').value;
+            const selectTurno = document.getElementById('turno');
+            const cajaHorarios = document.getElementById('caja-horarios');
+            
+            if (lugar === "BACKUS AQP") {
+                selectTurno.innerHTML = `
+                    <option value="Mañana (05:00 - 13:00)">Mañana (05:00 - 13:00)</option>
+                    <option value="Tarde (13:00 - 21:00)">Tarde (13:00 - 21:00)</option>
+                    <option value="Noche (21:00 - 05:00)">Noche (21:00 - 05:00)</option>
+                    <option value="Otro">Otro (Registro manual)</option>
+                `;
+                cajaHorarios.classList.remove('hidden'); 
+            } else {
+                selectTurno.innerHTML = `
+                    <option value="Mañana (07:00 - 15:00)">Mañana (07:00 - 15:00)</option>
+                    <option value="Tarde (15:00 - 23:00)">Tarde (15:00 - 23:00)</option>
+                    <option value="Noche (23:00 - 07:00)">Noche (23:00 - 07:00)</option>
+                    <option value="Otro">Otro (Registro manual)</option>
+                `;
+                cajaHorarios.classList.add('hidden');
+                document.getElementById('hora-inicio').value = '';
+                document.getElementById('hora-fin').value = '';
+            }
+            verificarTurno();
+            actualizarOpcionesUbicacionActividades();
+        }
+
+        function verificarTurno() {
+            if(document.getElementById('turno').value === 'Otro') document.getElementById('turno-manual').classList.remove('hidden');
+            else document.getElementById('turno-manual').classList.add('hidden');
+        }
+
+        // --- GESTIÓN DE MÚLTIPLES ACTIVIDADES ---
+        function agregarActividad() {
+            contadorActividades++;
+            const id = contadorActividades;
+            const contenedor = document.getElementById('contenedor-actividades');
+            const sede = document.getElementById('sede').value;
+            const lugar = document.getElementById('lugar').value;
+
+            let optionsHtml = '';
+            if (lugar === "BACKUS AQP") {
+                optionsHtml = `
+                    <option value="Línea 1">Línea 1</option>
+                    <option value="Línea 2">Línea 2</option>
+                    <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+                    <option value="Otros">Otros</option>
+                `;
+            } else {
+                optionsHtml = `
+                    <option value="Área de Trabajo General">Área de Trabajo General</option>
+                    <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+                    <option value="Otros">Otros</option>
+                `;
+            }
+
+            const div = document.createElement('div');
+            div.className = "bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3 relative actividad-item";
+            div.setAttribute('data-id', id);
+            
+            div.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-teal-400 font-bold text-xs uppercase">Actividad #${id}</span>
+                    ${contadorActividades > 1 ? `<button type="button" onclick="eliminarActividad(this)" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-trash"></i> Eliminar</button>` : ''}
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Zona / Línea / Taller</label>
+                        <select class="act-ubicacion w-full bg-slate-800 border border-slate-600 rounded-lg p-2 text-white text-xs outline-none">
+                            ${optionsHtml}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Breve Descripción</label>
+                        <input type="text" placeholder="Ej: Cambio de rodamientos..." class="act-desc w-full bg-slate-800 border border-slate-600 rounded-lg p-2 text-white text-xs outline-none">
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2 pt-1">
+                    <input type="checkbox" id="check-equipo-${id}" onchange="toggleEquipo(${id})" class="w-4 h-4 accent-teal-500 rounded bg-slate-800 border-slate-600">
+                    <label for="check-equipo-${id}" class="text-xs text-slate-300 cursor-pointer">Especificar Equipo / Máquina</label>
+                </div>
+
+                <div id="box-equipo-${id}" class="hidden pt-1">
+                    <label class="block text-xs font-semibold text-teal-400 mb-1">Equipo / Maquinaria Intervenida</label>
+                    <input type="text" placeholder="Ej: Faja Transportadora B / Paletizadora" class="act-equipo-text w-full bg-slate-800 border border-slate-600 rounded-lg p-2 text-white text-xs outline-none">
+                </div>
+            `;
+            contenedor.appendChild(div);
+        }
+
+        function eliminarActividad(btn) {
+            btn.closest('.actividad-item').remove();
+        }
+
+        function toggleEquipo(id) {
+            const box = document.getElementById(`box-equipo-${id}`);
+            const checkbox = document.getElementById(`check-equipo-${id}`);
+            if(checkbox.checked) {
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+                box.querySelector('input').value = '';
+            }
+        }
+
+        function actualizarOpcionesUbicacionActividades() {
+            const lugar = document.getElementById('lugar').value;
+            const items = document.querySelectorAll('.actividad-item');
+            
+            items.forEach(item => {
+                const select = item.querySelector('.act-ubicacion');
+                if(!select) return;
+                
+                let optionsHtml = '';
+                if (lugar === "BACKUS AQP") {
+                    optionsHtml = `
+                        <option value="Línea 1">Línea 1</option>
+                        <option value="Línea 2">Línea 2</option>
+                        <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+                        <option value="Otros">Otros</option>
+                    `;
+                } else {
+                    optionsHtml = `
+                        <option value="Área de Trabajo General">Área de Trabajo General</option>
+                        <option value="Taller de Mantenimiento">Taller de Mantenimiento</option>
+                        <option value="Otros">Otros</option>
+                    `;
+                }
+                select.innerHTML = optionsHtml;
+            });
+        }
+
+        // Cargar fotos
+        function cargarFotos(event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById('preview-fotos');
+            
+            if(files.length > 4) {
+                alert("Solo puedes subir un máximo de 4 fotografías.");
+                event.target.value = "";
+                return;
+            }
+
+            previewContainer.innerHTML = '';
+            fotosBase64 = [];
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fotosBase64.push(e.target.result);
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-full h-24 object-cover rounded-lg border border-slate-600';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ------------------ GENERAR REPORTE ------------------
+        function generarReporte() {
+            const sede = document.getElementById('sede').value;
+            const lugar = document.getElementById('lugar').value;
+            const selNombre = document.getElementById('nombre-select').value;
+
+            if(!sede || !lugar || !selNombre) {
+                alert("Por favor completa los campos principales (Sede, Lugar y Nombre).");
+                return;
+            }
+
+            // Datos Personales
+            const nomFinal = selNombre === 'OTRO' ? document.getElementById('nombre-manual').value : selNombre;
+            document.getElementById('res-nombre').innerText = nomFinal;
+            document.getElementById('res-dni').innerText = document.getElementById('dni').value || 'N/A';
+
+            // Ubicacion y Tiempo
+            document.getElementById('res-fecha').innerText = document.getElementById('fecha').value;
+            document.getElementById('res-ubicacion').innerText = `${sede.toUpperCase()} - ${lugar}`;
+            
+            const turnoSelect = document.getElementById('turno').value;
+            document.getElementById('res-turno').innerText = turnoSelect === 'Otro' ? document.getElementById('turno-manual').value : turnoSelect;
+
+            const hInicio = document.getElementById('hora-inicio').value;
+            const hFin = document.getElementById('hora-fin').value;
+            if(hInicio || hFin) {
+                document.getElementById('res-horarios-box').classList.remove('hidden');
+                document.getElementById('res-hora-inicio').innerText = hInicio || '--:--';
+                document.getElementById('res-hora-fin').innerText = hFin || '--:--';
+            }
+
+            // Consolidar Actividades
+            const items = document.querySelectorAll('.actividad-item');
+            const resListaActividades = document.getElementById('res-lista-actividades');
+            resListaActividades.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const ubicacion = item.querySelector('.act-ubicacion').value;
+                const desc = item.querySelector('.act-desc').value || 'Sin descripción';
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                let equipoText = '';
+                
+                if(checkbox && checkbox.checked) {
+                    equipoText = item.querySelector('.act-equipo-text').value;
+                }
+
+                const p = document.createElement('div');
+                p.className = "bg-slate-50 p-3 rounded border border-slate-200 mb-2";
+                p.innerHTML = `
+                    <p class="font-bold text-teal-700">Actividad #${index + 1} (${ubicacion})</p>
+                    <p class="text-slate-700 mt-1"><strong>Descripción:</strong> ${desc}</p>
+                    ${equipoText ? `<p class="text-slate-700"><strong>Equipo:</strong> ${equipoText}</p>` : ''}
+                `;
+                resListaActividades.appendChild(p);
+            });
+
+            // Orden y Limpieza
+            const ordenLimpiezaChecked = document.getElementById('orden-limpieza').checked;
+            document.getElementById('res-orden-limpieza').innerText = ordenLimpiezaChecked ? "SÍ (Realizado)" : "NO";
+
+            // Fotos
+            const resFotosContainer = document.getElementById('res-fotos-container');
+            const resFotos = document.getElementById('res-fotos');
+            if(fotosBase64.length > 0) {
+                resFotosContainer.classList.remove('hidden');
+                resFotos.innerHTML = '';
+                fotosBase64.forEach(base64 => {
+                    const img = document.createElement('img');
+                    img.src = base64;
+                    img.className = 'w-full h-40 object-cover rounded shadow border border-slate-200';
+                    resFotos.appendChild(img);
+                });
+            }
+
+            document.getElementById('form-section').classList.add('hidden');
+            document.getElementById('resultado-reporte').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // ------------------ EXPORTAR ------------------
+        function generarTextoResumen() {
+            const nom = document.getElementById('res-nombre').innerText;
+            const ubi = document.getElementById('res-ubicacion').innerText;
+            const fec = document.getElementById('res-fecha').innerText;
+            const tur = document.getElementById('res-turno').innerText;
+            const orden = document.getElementById('res-orden-limpieza').innerText;
+            
+            let texto = `*REPORTE TÉCNICO - KENNER SAC*%0A`;
+            texto += `👷‍♂️ Personal: ${nom}%0A`;
+            texto += `📍 Ubicación: ${ubi}%0A`;
+            texto += `📅 Fecha: ${fec} | Turno: ${tur}%0A`;
+            
+            if(!document.getElementById('res-horarios-box').classList.contains('hidden')) {
+                texto += `⏰ Ingreso: ${document.getElementById('res-hora-inicio').innerText} | Término: ${document.getElementById('res-hora-fin').innerText}%0A`;
+            }
+
+            texto += `%0A*ACTIVIDADES:*%0A`;
+            const items = document.querySelectorAll('.actividad-item');
+            items.forEach((item, index) => {
+                const ubicacion = item.querySelector('.act-ubicacion').value;
+                const desc = item.querySelector('.act-desc').value || 'Sin descripción';
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                let equipoText = checkbox && checkbox.checked ? item.querySelector('.act-equipo-text').value : '';
+
+                texto += `${index + 1}. [${ubicacion}] ${desc}${equipoText ? ' - Equipo: ' + equipoText : ''}%0A`;
+            });
+
+            texto += `%0A🧹 Orden y Limpieza del Taller: ${orden}`;
+            
+            return texto;
+        }
+
+        function compartirWhatsApp() {
+            window.open(`https://wa.me/?text=${generarTextoResumen()}`, '_blank');
+        }
+
+        function copiarTexto() {
+            const textoLimpio = decodeURIComponent(generarTextoResumen());
+            navigator.clipboard.writeText(textoLimpio).then(() => {
+                alert("¡Texto copiado al portapapeles! Puedes pegarlo en un mensaje.");
+            }).catch(err => {
+                alert("Error al copiar. Por favor, selecciona el texto manualmente.");
+            });
+        }
+    </script>
+</body>
+</html>
